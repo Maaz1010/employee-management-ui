@@ -1,0 +1,63 @@
+<div class="max-w-4xl mx-auto p-6">
+  <h1 class="text-2xl font-bold mb-4">Employees</h1>
+  <a routerLink="/employees/new"
+   class="inline-block mb-4 px-3 py-1 bg-blue-600 text-white rounded">
+  Add Employee
+  </a>
+
+  <div class="flex gap-2 mb-4">
+    <input
+      #searchBox
+      type="text"
+      placeholder="Search by name, email or phone"
+      (keyup.enter)="applySearch(searchBox.value)"
+      class="flex-1 border p-2 rounded" />
+
+    <button (click)="applySearch(searchBox.value)" class="px-4 py-2 bg-blue-600 text-white rounded cursor-pointer " >
+      Search
+    </button>
+
+    @if (searchTerm()) {
+      <button (click)="clearSearch(searchBox)" class="px-4 py-2 border rounded cursor-pointer">
+        Clear
+      </button>
+    }
+  </div>
+
+  @if (loading()) {
+    <h2 class="text-xl font-semibold text-fuchsia-500">Loading...</h2>
+  } @else if (errorMessage()) {
+    <h2 class= "font-bold text-red-600">{{ errorMessage() }}</h2>
+  } @else if (employees().length === 0) {
+    <h2 class="font-bold text-olive-600">No employees found.</h2>
+  } @else if (filteredEmployees().length === 0) {
+  <h2 class="font-bold text-gray-600">No employees match "{{ searchTerm() }}".</h2>
+  } @else {
+    <table class="w-full border border-gray-300">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="p-2 text-left">ID</th> 
+          <th class="p-2 text-left">Name</th>
+          <th class="p-2 text-left">Phone</th>
+          <th class="p-2 text-left">Email</th>
+          <th class="p-2 text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (emp of filteredEmployees(); track emp.id) {
+          <tr class="border-t">
+            <td class="p-2">{{ emp.id }}</td>
+            <td class="p-2">{{ emp.name }}</td>
+            <td class="p-2">{{ emp.phone }}</td>
+            <td class="p-2">{{ emp.email }}</td>
+            <td class="p-2 space-x-2">
+              <a [routerLink]="['/employees', emp.id]" class="text-blue-600">View</a>
+              <a [routerLink]="['/employees', emp.id, 'edit']" class="text-green-600">Edit</a>
+              <button (click)="deleteEmployee(emp.id!)" class="text-red-600 cursor-pointer">Delete</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

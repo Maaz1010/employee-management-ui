@@ -1,0 +1,52 @@
+<div class="max-w-md mx-auto p-6">
+  <h1 class="text-2xl font-bold mb-4">
+    {{ isEditMode() ? 'Edit Employee' : 'Add Employee' }}
+  </h1>
+
+  @if (loadFailed()) {
+    <p class="text-red-600">Employee with Id {{ employeeId }} not found.</p>
+    <a routerLink="/employees" 
+    class="inline-block mt-4 text-bold bg-indigo-500 hover:bg-indigo-600 text-white p-2 rounded">
+    Back to list</a>
+  }@else{
+  
+    @if (generalError()) {
+      <p class="text-red-600 mb-3">{{ generalError() }}</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+      <div>
+        <label class="block mb-1">Name</label>
+        <input formControlName="name" class="w-full border p-2 rounded" />
+        @if (form.controls.name.touched && form.controls.name.invalid) {
+          <p class="text-red-600 text-sm">Name is required (2 to 50 characters).</p>
+        }
+      </div>
+
+      <div>
+        <label class="block mb-1">Phone</label>
+        <input formControlName="phone" class="w-full border p-2 rounded" />
+        @if (form.controls.phone.touched && form.controls.phone.invalid) {
+          <p class="text-red-600 text-sm">Enter a valid 10-digit phone number.</p>
+        }
+      </div>
+
+      <div>
+        <label class="block mb-1">Email</label>
+        <input formControlName="email" class="w-full border p-2 rounded" />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <p class="text-red-600 text-sm">Enter a valid email.</p>
+        }
+      </div>
+
+      <div class="space-x-2">
+        <button type="submit"
+         class="px-4 py-2 bg-blue-600 text-white rounded cursor-pointer hover:bg-blue-700 disabled:[opacity-50,cursor-not-allowed]" 
+          [disabled]="submitting() || (isEditMode() && form.pristine)">
+          {{ isEditMode() ? 'Update' : 'Save' }}
+        </button>
+        <a routerLink="/employees" class="bg-fuchsia-700 text-white rounded p-2">Cancel</a>
+      </div>
+    </form>
+  }
+</div>
